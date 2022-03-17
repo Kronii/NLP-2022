@@ -37,8 +37,10 @@ def parse_news_article(driver, url):
         # DATE PUBLISHED
         article_data["datetime_published"] = get_datetime_published(driver)
 
-        # TITLE
-        article_data["title"] = driver.find_element(By.TAG_NAME, "h1").text
+        # CATEGORY and TITLE
+        h1 = driver.find_elements(By.TAG_NAME, "h1")
+        article_data["category"] = h1[0].text
+        article_data["title"] = h1[1].text
 
         # SUBTITLE
         article_data["subtitle"] = driver.find_element(By.CLASS_NAME, "subtitle").text
