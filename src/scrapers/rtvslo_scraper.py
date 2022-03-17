@@ -79,8 +79,10 @@ def parse_search_results(driver, articles_URLS, path):
         
         # save data every 10 articles
         if idx % 10 == 0:
-            with open(os.path.join(path, "data", "intermediate_data_export.json"), "w", encoding='utf-8') as f:
+            with open(os.path.join(path, "data", "intermediate_data_export.json"), "a+", encoding='utf-8') as f:
                 json.dump(page_data, f, ensure_ascii=True)
+                page_data.clear()
+                print("Total exported articles:", idx)
     
     return page_data
 
@@ -90,6 +92,8 @@ def retrieve_urls(driver):
     categories = ["slovenija", "gospodarstvo", "evropska-unija", "znanost-in-tehnologija", "zdravje", "crna-kronika",
                     "okolje", "svet", "svet/evropa", "svet/s-in-j-amerika", "svet/bliznji-vzhod", "svet/afrika", 
                     "svet/azija-z-oceanijo", "sport", "kultura", "zabava-in-slog"]
+
+    categories = ["slovenija"]
     
     # Retrieving all articles and their links
     articles_URLS = set()
@@ -100,7 +104,7 @@ def retrieve_urls(driver):
         driver.get(archive_URL)
         time.sleep(TIMEOUT)
 
-        for _ in range(100):
+        for _ in range(50):
             
             articles = driver.find_elements(By.CLASS_NAME, "article-archive-item")
             for article in articles:
@@ -123,7 +127,7 @@ def retrieve_urls(driver):
             next_page = driver.find_elements(By.CLASS_NAME, "page-link")
             next_page = next_page[len(next_page) - 1]
             
-            if next_page.text == "100":
+            if next_page.text == "50":
                 break
 
             driver.execute_script("arguments[0].click();", next_page)
@@ -138,7 +142,10 @@ def search(driver, path):
 
     with open(os.path.join(path, "data", "urls.json"), "w", encoding='utf-8') as f:
         json.dump(articles_URLS, f, ensure_ascii=True)
-    
+
+    # with open(os.path.join(path, "data", "urls.json"), "r") as f:
+    #     articles_URLS = list(f.readline())
+
     data = parse_search_results(driver, articles_URLS, path)
     
     return data
