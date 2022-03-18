@@ -4,11 +4,13 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
+
 TIMEOUT = 2
 TIMEOUT_COMMENTS = 1
 
+
 def get_datetime_published(driver):
-    publish_meta = driver.find_element(By.CLASS_NAME, "publish-meta").text
+    publish_meta = driver.find_element(By.CLASS_NAME, "publish-meta").get_attribute("textContent")
     publish_meta_list = publish_meta.split()
 
     # setting locale to slovenian
@@ -28,12 +30,12 @@ def get_content(driver):
     content = ""
     paragraphs = driver.find_element(By.TAG_NAME, "article").find_elements(By.TAG_NAME, "p")
     for p in paragraphs:
-        content = content + p.text + " "
+        content = content + p.get_attribute("textContent") + " "
     return content
 
 
 def get_tags(driver):
-    return [tag.text for tag in driver.find_element(By.CLASS_NAME, "article-tags").find_elements(By.TAG_NAME, "a")]
+    return [tag.get_attribute("textContent") for tag in driver.find_element(By.CLASS_NAME, "article-tags").find_elements(By.TAG_NAME, "a")]
 
 
 def get_comments_count(driver):
@@ -63,7 +65,7 @@ def get_comments(driver):
         # comment properties
         comment_user = comment.find_elements(By.CLASS_NAME, "profile-name")[num_elements - 1].get_attribute(
             "textContent")
-        comment_datetime = comment.find_elements(By.CLASS_NAME, "publish-meta")[num_elements].text
+        comment_datetime = comment.find_elements(By.CLASS_NAME, "publish-meta")[num_elements].get_attribute("textContent")
         comment_content = comment.find_elements(By.TAG_NAME, "p")[num_elements - 1].get_attribute(
             "textContent").replace('\n', ' ')
         comment_likes = comment.find_elements(By.CLASS_NAME, "comment-vote")[num_elements - 1].get_attribute(

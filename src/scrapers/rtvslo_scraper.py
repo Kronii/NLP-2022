@@ -32,21 +32,22 @@ def parse_news_article(driver, url):
         article_data["url"] = url
 
         # AUTHOR
-        article_data["author"] = driver.find_element(By.CLASS_NAME, "author-name").text
+        article_data["author"] = driver.find_element(By.CLASS_NAME, "article-meta").find_element(By.CLASS_NAME, "author-name").get_attribute("textContent")
 
         # DATE PUBLISHED
         article_data["datetime_published"] = get_datetime_published(driver)
 
-        # CATEGORY and TITLE
-        h1 = driver.find_elements(By.TAG_NAME, "h1")
-        article_data["category"] = h1[0].text
-        article_data["title"] = h1[1].text
+        # CATEGORY
+        article_data["category"] = url.split("/")[3]
+
+        # TITLE
+        article_data["title"] = driver.find_element(By.CLASS_NAME, "article-header").find_element(By.TAG_NAME, "h1").get_attribute("textContent")
 
         # SUBTITLE
-        article_data["subtitle"] = driver.find_element(By.CLASS_NAME, "subtitle").text
+        article_data["subtitle"] = driver.find_element(By.CLASS_NAME, "subtitle").get_attribute("textContent")
 
         # HEADLINE
-        article_data["headline"] = driver.find_element(By.CLASS_NAME, "lead").text
+        article_data["headline"] = driver.find_element(By.CLASS_NAME, "lead").get_attribute("textContent")
 
         # CONTENT
         article_data["content"] = get_content(driver)
@@ -78,7 +79,7 @@ def parse_search_results(driver, articles_URLS, path):
         page_data.append(article_data)
         
         # save data every 10 articles
-        if idx % 10 == 0:
+        if idx+1 % 10 == 0:
             with open(os.path.join(path, "data", "intermediate_data_export.json"), "a+", encoding='utf-8') as f:
                 json.dump(page_data, f, ensure_ascii=True)
                 page_data.clear()
@@ -93,8 +94,6 @@ def retrieve_urls(driver):
                     "okolje", "svet", "svet/evropa", "svet/s-in-j-amerika", "svet/bliznji-vzhod", "svet/afrika", 
                     "svet/azija-z-oceanijo", "sport", "kultura", "zabava-in-slog"]
 
-    categories = ["slovenija"]
-    
     # Retrieving all articles and their links
     articles_URLS = set()
 
@@ -127,7 +126,7 @@ def retrieve_urls(driver):
             next_page = driver.find_elements(By.CLASS_NAME, "page-link")
             next_page = next_page[len(next_page) - 1]
             
-            if next_page.text == "50":
+            if next_page.get_attribute("textContent") == "50":
                 break
 
             driver.execute_script("arguments[0].click();", next_page)
@@ -144,7 +143,7 @@ def search(driver, path):
         json.dump(articles_URLS, f, ensure_ascii=True)
 
     # with open(os.path.join(path, "data", "urls.json"), "r") as f:
-    #     articles_URLS = list(f.readline())
+    #     articles_URLS = json.loads(f.read())
 
     data = parse_search_results(driver, articles_URLS, path)
     
