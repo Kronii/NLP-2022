@@ -20,7 +20,7 @@ TIMEOUT = 3
 PATH = os.path.dirname(os.path.abspath(__file__))
 
 # Parameters
-NUM_WORKERS = 10
+NUM_WORKERS = 20
 
 
 def initialize_driver():
@@ -28,7 +28,7 @@ def initialize_driver():
 
     chrome_options = Options()
     # If you comment the following line, a browser will show ...
-    # chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless")
     chrome_options.add_argument("user-agent=nlp-2022")
     chrome_webdriver_service = Service(WEB_DRIVER_LOCATION)
     driver = webdriver.Chrome(service=chrome_webdriver_service, options=chrome_options)
@@ -50,7 +50,7 @@ def retrieve_num_comments(article):
         driver.get(url)
         time.sleep(TIMEOUT)
 
-        retries = 3
+        retries = 1
         while True:
             try:
                 num_comments = driver.find_element(By.XPATH, "//*[@id='onl-article-comments']/div/div[1]/h3/span").get_attribute("textContent")
@@ -58,13 +58,25 @@ def retrieve_num_comments(article):
                 break
             except NoSuchElementException as e:
                 print(f"No such element exception... Retrying ({retries})")
-                time.sleep(TIMEOUT * 2)
+                time.sleep(TIMEOUT)
                 if retries <= 0:
                     article["24ur"]["total_comments"] = -1
                     return article
                 retries -= 1
         
         article["24ur"]["total_comments"] = num_comments
+        print(article["24ur"]["title"])
+        print(article["24ur"]["total_comments"])
+        print()
+
+        num_comments_data = {
+            "url": article["24ur"]["url"],
+            "total_comments": article["24ur"]["total_comments"]
+        }
+        with writer_lock:
+            with open(os.path.join(PATH, "data", "num_comments.json"), "a+", encoding='utf-8') as f:
+                json.dump(num_comments_data, f, ensure_ascii=True)
+                f.write(",")
 
     return article
 
