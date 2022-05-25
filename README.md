@@ -1,5 +1,7 @@
 # NLP-2022
 
+[Report](https://github.com/Kronii/NLP-2022/blob/main/report/NLP_2022_final.pdf)
+
 User engagement prediction implementation using deep learing and NLP approaches.
 
 ## Installation
@@ -23,11 +25,11 @@ Then download chromedriver from [https://chromedriver.chromium.org/](https://chr
 
 The structure of the project is as follows:
 
-`./src` include all source files of our models
+`./src` includes all source files of our models
 
-`./report` include final report
+`./report` includes final [report](https://github.com/Kronii/NLP-2022/blob/main/report/NLP_2022_final.pdf)
 
-`./data` include data used for our project
+`./data` includes data used for our project
 
 > The data and **final trained model** can be accessed also [here](https://drive.google.com/drive/folders/1aQNp4dg_CT_keet5G0OvugG3JYXEMJkT?usp=sharing).
 
