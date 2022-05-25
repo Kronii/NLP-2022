@@ -1,5 +1,6 @@
 # NLP-2022
-Here there will be very organised description of the project.
+
+User engagement prediction implementation using deep learing and NLP approaches.
 
 ## Installation
 
@@ -13,7 +14,25 @@ Create python virtual environment and install requirements.
 ```
 $ python3 -m venv venv
 $ source venv/bin/activate
-$ pip3 install -r requirements.txt
+$ pip3 install -r ../requirements.txt
 ```
 
 Then download chromedriver from [https://chromedriver.chromium.org/](https://chromedriver.chromium.org/) for selenium web scraper and put it inside `./src` directory.
+
+## Structure
+
+The structure of the project is as follows:
+
+`./src` include all source files of our models
+
+`./report` include final report
+
+`./data` include data used for our project
+
+> The data and **final trained model** can be accessed also [here](https://drive.google.com/drive/folders/1aQNp4dg_CT_keet5G0OvugG3JYXEMJkT?usp=sharing).
+
+The source of our project (located in directory `./src`) consists out of three main categories:
+
+1. Scrapers (`./src/scrapers`) - Scripts that we used for retrieving the data
+2. Parsers (`./src/parsers`) - Scripts used to parse the raw data into usable form
+3. Models (`./src/models`) - Prediction models
